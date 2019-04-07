@@ -7,8 +7,6 @@ import redis from 'redis'
 
 
 const port = 5005
-const url = "";
-
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
