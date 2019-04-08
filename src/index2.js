@@ -73,4 +73,4 @@ function PostToSAP(url, req, token, res) {
 }
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log('RoutingLogic listening on port ' + port))
+app.listen(PORT, () => console.log('RoutingLogic listening on port ' + PORT))
