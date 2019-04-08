@@ -37,10 +37,23 @@ app.post('/routeMessage', (req, res) => {
     client.get(message.message.conversation, function(err, value) {
         
         var token
-        if(value == null) 
-            token = "Token 45040b7e31a74878e785ea233bb87430" 
+        if(value == null) {
+            token = "Token 5f495d931aaaff155657eea874ff5cd7"  }
         else 
-            token = "Token " + value
+            { 
+                client.get(value, function (err, value) {
+                    token = "Token " + value
+                    var convo = message.message.conversation
+                    var messagea = message.message.attachment
+                    var req = { 
+                        conversation_id : convo,
+                        message : messagea
+                    }
+
+                    PostToSAP(url, req, token, res)
+                    })
+                    return;
+             }
             
             var convo = message.message.conversation
             var messagea = message.message.attachment
