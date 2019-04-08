@@ -1,4 +1,4 @@
-import winston from 'winston'
+var winston=require('winston')
 
 const logger = winston.createLogger({
   level: 'info',
