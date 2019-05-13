@@ -7,7 +7,9 @@ import redis from 'redis'
 
 
 const port = 5005
-const redisURL = "redis://127.0.0.1:6379"
+const redisURL = "redis://GlobalSTORE1@redis-11736.c8.us-east-1-3.ec2.cloud.redislabs.com:11736"
+
+// 27.0.0.1:6379"
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
