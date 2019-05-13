@@ -49,13 +49,26 @@ app.post('/routeMessage', (req, res) => {
         }
         else 
             { 
+                if(value=='lifechat')
+                {
+                    
+                }
+                else
+                {
                 client.get(value, function (err, value) {
                     token = "Token " + value
                     PostToSAP(url, req, token, res)
                     })
+                }
              }
         }) 
     })
+
+app.post('/agentMessage', (req, res) => {
+    logger.info(req.body);
+    res.send("agent message received:");
+})
+
 
 function PostToSAP(url, req, token, res) {
     axios.post(url, req, {

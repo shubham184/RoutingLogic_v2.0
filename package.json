@@ -7,15 +7,18 @@
     "start": "node src/index2.js",
     "start2": "./node_modules/.bin/babel-node  src/start.js",
     "debug": "nodemon src/start.js --inspect --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
     "express": "^4.16.4",
+    "mocha": "^6.1.4",
     "ngrok": "^3.1.1",
+    "nock": "^10.0.6",
     "nodemon": "^1.18.10",
     "redis": "^2.8.0",
     "winston": "^3.2.1"
