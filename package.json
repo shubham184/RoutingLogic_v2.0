@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index2.js",
+    "start": "nodemon src/start.js --exec babel-node",
     "start2": "./node_modules/.bin/babel-node  src/start.js",
     "debug": "nodemon src/start.js --inspect --exec babel-node",
     "test": "node_modules/.bin/mocha"

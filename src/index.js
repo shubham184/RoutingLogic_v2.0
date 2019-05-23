@@ -8,6 +8,8 @@ import redis from 'redis'
 
 const port = 5005
 const redisURL = "redis://127.0.0.1:6379"
+const logmessage = true;
+const defaultBotToken = '5f495d931aaaff155657eea874ff5cd7'
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
@@ -19,6 +21,10 @@ app.use(bodyParser.urlencoded({
 app.post('/switchBot', (req, res) => {
     var client = redis.createClient(redisURL);
     var params = req.body;
+
+    if(logmessage) {
+        logger.info(JSON.stringify(req.body))
+    }
 
     if (params.conversation_id == undefined || params.targetBot == undefined) {
         res.send("no valid parameters, no switching done.");
@@ -51,6 +57,10 @@ app.post('/routeMessage', (req, res) => {
 
     var message = req.body;
 
+    if(logmessage) {
+        logger.info(JSON.stringify(message));
+    }
+
     var url = "https://api.cai.tools.sap/build/v1/dialog"; // URI for conversation endpoint
     var convo = message.message.conversation // retrieve conversation ID
     client.get(convo, function (err, value) {
@@ -62,7 +72,7 @@ app.post('/routeMessage', (req, res) => {
         var token;
         if (value == null) {
             // forward to default bot token
-            token = "Token 5f495d931aaaff155657eea874ff5cd7"
+            token = "Token " + defaultBotToken
             PostToSAP(url, req, token, res)
         } else {
             if (value == 'livechat') {
@@ -80,7 +90,7 @@ app.post('/routeMessage', (req, res) => {
     })
 })
 
-app.post('/conversationTarget', (req, res) => {
+app.post('/conversationTarge    t', (req, res) => {
     var convId = req.body.conversation_id;
     var client = redis.createClient();
 
@@ -90,7 +100,10 @@ app.post('/conversationTarget', (req, res) => {
 })
 
 app.post('/agentMessage', (req, res) => {
-    logger.info(req.body);
+    if(logmessage) {
+        logger.info(JSON.stringify(req.body))
+        logger.info('----------------------------');
+    }
     res.send("agent message received");
     var message = req.body.message;
     var convId = req.body.conversation_id //'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
@@ -109,7 +122,10 @@ app.post('/agentMessage', (req, res) => {
 })
 
 app.post('/errorMessage', (req, res) => {
-    logger.info(req.body);
+    if(logmessage) {
+        logger.info(JSON.stringify(req.body))
+ 
+    }
     res.send('error message received from cisco ece')
 })
 
@@ -130,10 +146,10 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
     logger.info('posting to livechat')
-    var lUrl = 'http://192.168.88.176:5000/livechatMessage'
+    var lUrl = 'http://192.168.88.178:5000/livechatMessage'
 
     axios.post(lUrl, req).then(function (response) {
-        logger.info(response)
+        logger.info(JSON.stringify(response.data))
         res.send(response.data)
     })
     return;

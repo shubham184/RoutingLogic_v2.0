@@ -1,0 +1,196 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Fujitsu chatbot routing logic",
+        "description": "Fujitsu Routing logic API documentation",
+        "contact": "marco.littel@ts.fujitsu.com",
+        "version": "1.0.0"
+    },
+    "components": {
+        "schemas" : {
+            "switchbot" : {
+                "type": "object", 
+                "properties": {
+                    "conversation_id": {
+                        "type": "string",
+                        "description": "target conversation id"
+                    },
+                    "targetbot": {
+                        "type": "string",
+                        "description": "target of the conversation. can be bot token or hardcoded value livechat"
+                    }
+                }
+            },
+
+            "agentMessage": {
+                "type": "object" ,
+                "properties": {
+                    "conversation_id": {
+                        "description" : "target conversation id",
+                        "type" : "string"
+                    },
+                    "message": {
+                        "description": "message to post" ,
+                        "type": "string"
+                    }
+                }
+            },
+            "participant": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "conversation": {
+                        "type": "string"
+                    },
+                    "senderId":  {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type ": "string"
+                    },
+                    "__v": {
+                        "type": "integer", 
+                        "format": "int32"
+                    },
+                    "isBot": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "attachment": {
+                "type": "object",
+                "properties": { 
+                    "content": {
+                        "type" : "string"
+                    },
+                    "type" : {
+                        "type": "string"
+                    }
+                }
+            },
+            "innermessage": {
+                "type": "object", 
+                "properties": {
+                    "__v" : {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "participant": {
+                        "$ref": "#/components/schemas/participant"
+                    },
+                    "conversation": {
+                        "description": "conversation id",
+                        "type ": "string"
+                    },
+                    "attachment": {
+                        "description": "contents of the message",
+                        "$ref": "#/components/schemas/attachment"
+                    }
+
+                }
+            },
+            "webchatmessage": { 
+                "type" : "object",
+                "properties": {
+                    "message": {
+                        "$ref": "#/components/schemas/innermessage"
+                    },
+                    "chatId": {
+                        "description": "chat id from webchat",
+                        "type" : "string"
+                    },
+                    "senderId": {
+                        "description": "sender id from webchat",
+                        "type": "string"
+                    },
+                    "mentioned": {
+                        "type": "boolean"
+                    },
+                    "origin": { 
+                        "description": "identifies type of source channel, e.g. webchat, messenger, etc",
+                        "type": "string"
+                    },
+                    "memory": {
+                        "description": "conversation memory at the time of the message", 
+                        "type": "object"  
+                    },
+                    "merge_memory": {
+                        "description": "if set to false, memory of the conversation will be overwritten with the memory in this message",
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "requestbodies": {
+            "agentmessage": {
+                "description": "agent message to post to the conversation",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/agentMessage"
+                        } 
+                    }
+                }
+            },
+            "switchbot": {
+                "description": "switchbot definition",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/switchbot"
+                        } 
+                    }
+                }
+            },
+            "webchatmessage": {
+                "description": "webchatmessage definition",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/webchatmessage"
+                        } 
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/switchBot": {
+            "post": {
+                "description": "switch target for conversation",
+                "requestBody" : {
+                    "$ref": "#/components/requestbodies/switchbot"  
+                }
+            }
+        },
+
+        "/routeMessage": {
+            "post": {
+                "description": "route the message and send it to the conversation target for that conversation",
+                "requestBody": {
+                    "$ref": "#/components/requestbodies/webchatmessage"
+                }
+            }
+        },
+
+        "/agentMessage": {
+            "post": {
+                "description": "used to post an agent message to the conversation",
+                "requestBody": {
+                    "$ref": "#/components/requestbodies/agentmessage"
+                }
+            }
+        }
+
+    }
+}
