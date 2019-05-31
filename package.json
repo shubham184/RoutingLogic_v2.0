@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/start.js --exec babel-node",
-    "start2": "./node_modules/.bin/babel-node  src/start.js",
-    "debug": "nodemon src/start.js --inspect --exec babel-node",
-    "test": "node_modules/.bin/mocha"
+    "start": "set NODE_ENV=default && nodemon src/start.js --exec babel-node",
+    "startDev": "set NODE_ENV=dev && nodemon src/start.js --exec babel-node",
+    "debug": "set NODE_ENV=dev && nodemon src/start.js --inspect --exec babel-node",
+    "test": "set NODE_ENV=test && node_modules/.bin/mocha",
+    "build": "babel src --out-dir dist"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,10 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0"
   }

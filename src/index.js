@@ -4,12 +4,13 @@ import axios from 'axios'
 import bodyParser from 'body-parser'
 import logger from './logger'
 import redis from 'redis'
+import config from '../config'
 
 
-const port = 5005
-const redisURL = "redis://127.0.0.1:6379"
-const logmessage = true;
-const defaultBotToken = '5f495d931aaaff155657eea874ff5cd7'
+// const port = 5005
+// const redisURL = "redis://127.0.0.1:6379"
+// const logmessage = true;
+// const defaultBotToken = '5f495d931aaaff155657eea874ff5cd7'
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
@@ -19,10 +20,10 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.post('/switchBot', (req, res) => {
-    var client = redis.createClient(redisURL);
+    var client = redis.createClient(config.redisURL);
     var params = req.body;
 
-    if(logmessage) {
+    if(config.logMessage) {
         logger.info(JSON.stringify(req.body))
     }
 
@@ -53,15 +54,15 @@ app.post('/switchBot', (req, res) => {
 })
 
 app.post('/routeMessage', (req, res) => {
-    var client = redis.createClient(redisURL)
+    var client = redis.createClient(config.redisURL)
 
     var message = req.body;
 
-    if(logmessage) {
+    if(config.logMessage) {
         logger.info(JSON.stringify(message));
     }
 
-    var url = "https://api.cai.tools.sap/build/v1/dialog"; // URI for conversation endpoint
+    var url = config.botAPIEndPoint; // URI for conversation endpoint
     var convo = message.message.conversation // retrieve conversation ID
     client.get(convo, function (err, value) {
         var messagea = message.message.attachment
@@ -72,7 +73,7 @@ app.post('/routeMessage', (req, res) => {
         var token;
         if (value == null) {
             // forward to default bot token
-            token = "Token " + defaultBotToken
+            token = "Token " + config.defaultBotToken
             PostToSAP(url, req, token, res)
         } else {
             if (value == 'livechat') {
@@ -90,7 +91,7 @@ app.post('/routeMessage', (req, res) => {
     })
 })
 
-app.post('/conversationTarge    t', (req, res) => {
+app.post('/conversationTarget', (req, res) => {
     var convId = req.body.conversation_id;
     var client = redis.createClient();
 
@@ -100,14 +101,13 @@ app.post('/conversationTarge    t', (req, res) => {
 })
 
 app.post('/agentMessage', (req, res) => {
-    if(logmessage) {
+    if(config.logMessage) {
         logger.info(JSON.stringify(req.body))
-        logger.info('----------------------------');
     }
-    res.send("agent message received");
+     
     var message = req.body.message;
     var convId = req.body.conversation_id //'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
-    var bcUrl = 'http://localhost:8082/v1/connectors/d58394c2-9784-40d9-8158-9a46817ebe43/conversations/' + convId + '/messages';
+    var bcUrl = config.botConnector + '/connectors' + config.connectorId + '/conversations/' + convId + '/messages'
 
     var response = {
         "messages": [{
@@ -122,7 +122,7 @@ app.post('/agentMessage', (req, res) => {
 })
 
 app.post('/errorMessage', (req, res) => {
-    if(logmessage) {
+    if(config.logMessage) {
         logger.info(JSON.stringify(req.body))
  
     }
@@ -156,4 +156,4 @@ function PostToLivechat(url, req, token, res) {
 }
 
 
-app.listen(port, () => console.log('RoutingLogic listening on port ' + port))
+app.listen(config.port, () => console.log('RoutingLogic listening on port ' + config.port))
