@@ -20,27 +20,27 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- task: CopyFiles@2
+- task: ArchiveFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/dist'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/dist'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
 
-- task: CopyFiles@2
+- task: ArchiveFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: 'package.json'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: file-creator@5
-  inputs:
-    fileoverwrite: true
-    filepath: '$(Build.ArtifactStagingDirectory)/release.json'
-    filecontent: '{ "build" : "$(Build.BuildNumber)" }'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/package.json'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: false
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'RoutingLogicDrop'
     publishLocation: 'Container'
+
+
 
