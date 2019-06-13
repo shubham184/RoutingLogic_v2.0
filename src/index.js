@@ -1,16 +1,13 @@
 import express from 'express'
-var app = express()
 import axios from 'axios'
 import bodyParser from 'body-parser'
 import logger from './logger'
 import redis from 'redis'
 import config from '../config'
+import fs from 'fs'
+import https from 'https'
 
-
-// const port = 5005
-// const redisURL = "redis://127.0.0.1:6379"
-// const logmessage = true;
-// const defaultBotToken = '5f495d931aaaff155657eea874ff5cd7'
+var app = express()
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
@@ -155,5 +152,11 @@ function PostToLivechat(url, req, token, res) {
     return;
 }
 
+https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+  }, app)
+  .listen(config.port, function () {
+    console.log('Routing logic listening on ' + config.port)
+  })
 
-app.listen(config.port, () => console.log('RoutingLogic listening on port ' + config.port))
