@@ -129,6 +129,10 @@ app.post('/errorMessage', (req, res) => {
     res.send('error message received from cisco ece')
 })
 
+app.get('/', (req, res) => {
+	res.send('hi')
+})
+
 function PostToSAP(url, req, token, res) {
     axios.post(url, req, {
             headers: {
@@ -146,7 +150,7 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
     logger.info('posting to livechat')
-    var lUrl = 'http://192.168.88.178:5000/livechatMessage'
+    var lUrl = ' https://b791d09f.ngrok.io/livechatMessage'
 
     axios.post(lUrl, req).then(function (response) {
         logger.info(JSON.stringify(response.data))
