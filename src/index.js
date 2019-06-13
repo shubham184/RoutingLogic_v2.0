@@ -161,8 +161,8 @@ function PostToLivechat(url, req, token, res) {
 }
 
 https.createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
+    key: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
+    cert: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem')
   }, app)
   .listen(config.port, function () {
     console.log('Routing logic listening on ' + config.port)
