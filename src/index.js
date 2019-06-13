@@ -17,8 +17,12 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.post('/switchBot', (req, res) => {
+    
+    
     var client = redis.createClient(config.redisURL);
     var params = req.body;
+
+    console.log('Switching ' + JSON.stringify( params));
 
     if(config.logMessage) {
         logger.info(JSON.stringify(req.body))
@@ -28,7 +32,7 @@ app.post('/switchBot', (req, res) => {
         res.send("no valid parameters, no switching done.");
         return;
     }
-
+    
     client.set(params.conversation_id, params.targetBot)
     res.send("Switchbot completed succesfully, conversationId " + params.conversation_id + " switched to " + params.targetBot)
 
