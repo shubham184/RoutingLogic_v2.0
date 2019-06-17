@@ -151,12 +151,27 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
     logger.info('posting to livechat')
-    var lUrl = ' https://b791d09f.ngrok.io/livechatMessage'
+    var lUrl = config.livechatConnector;
 
-    axios.post(lUrl, req).then(function (response) {
+    axios.post(lUrl, req)
+    .then(function (response) {
         logger.info(JSON.stringify(response.data))
         res.send(response.data)
     })
+    .catch(function(error) {
+        logger.info(JSON.stringify(error));
+        
+        var errorMessage = { 
+            "conversation_id": params.conversation_id,
+            "message": {
+                "type": "text",
+                "content": "We're sorry, but there is an error establishing the link."
+            }        
+        }
+            
+        res.send(errorMessage);
+    }
+    );
     return;
 }
 
