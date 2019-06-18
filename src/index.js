@@ -124,7 +124,7 @@ app.post('/agentMessage', (req, res) => {
 
 app.post('/errorMessage', (req, res) => {
     if(config.logMessage) {
-        logger.info(JSON.stringify(req.body))
+        logger.info(JSON.stringify(req.body, null, 2))
  
     }
     res.send('error message received from cisco ece')
@@ -135,13 +135,16 @@ app.get('/', (req, res) => {
 })
 
 function PostToSAP(url, req, token, res) {
+    logger.info('Posting to SAP CAI ' + token);
     axios.post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
             }
         })
         .then(function (response) {
-            logger.info(response)
+            if(config.logMessage) {
+                logger.info('SAP CAI response: ' + JSON.stringify(response.data, null, 2));
+            }
             res.send(response.data)
         })
         .catch(function (error) {
@@ -153,33 +156,55 @@ function PostToLivechat(url, req, token, res) {
     logger.info('posting to livechat')
     var lUrl = config.livechatConnector;
 
+    req.timeout = "2000";
+
     axios.post(lUrl, req)
     .then(function (response) {
-        logger.info(JSON.stringify(response.data))
+        logger.info('response: ' + JSON.stringify(response.data))
         res.send(response.data)
     })
     .catch(function(error) {
         logger.info(JSON.stringify(error));
         
-        var errorMessage = { 
-            "conversation_id": params.conversation_id,
-            "message": {
-                "type": "text",
-                "content": "We're sorry, but there is an error establishing the link."
-            }        
-        }
+        var errorMessage = {
+            "results": {
+              "nlp": {},
+              "qna": {},
+              "messages": [
+                {
+                  "type": "text",
+                  "content": "We're sorry, but there is an error establishing the link.",
+                  "markdown": null,
+                  "delay": 3,
+                  "value": "We're sorry, but there is an error establishing the link."
+                }
+              ],
+              "conversation": {
+                "id": params.conversation_id,
+                "language": "fr",
+                "memory": {},
+                "skill": "small-talks",
+                "skill_occurences": 6
+              }
+            },
+            "message": "Dialog rendered with success"
+          }
             
         res.send(errorMessage);
-    }
+        }
     );
     return;
 }
 
-https.createServer({
-    key: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
-    cert: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem')
-  }, app)
-  .listen(config.port, function () {
+// https.createServer({
+//     key: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
+//     cert: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
+//     timeout: 3000
+//   }, app)
+//   .listen(config.port, function () {
+//     console.log('Routing logic listening on ' + config.port)
+//   })
+  
+ app.listen(config.port, function () {
     console.log('Routing logic listening on ' + config.port)
-  })
-
+  });
