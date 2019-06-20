@@ -33,7 +33,13 @@ app.post('/switchBot', (req, res) => {
         return;
     }
     
-    client.set(params.conversation_id, params.targetBot)
+    // from livechat we send an empty string. if so, delete this conv so we are routed back to default bot
+    if(params.targetBot == "") {
+        client.del(params.conversation_id )
+    }
+    else {
+        client.set(params.conversation_id, params.targetBot)
+    }
     res.send("Switchbot completed succesfully, conversationId " + params.conversation_id + " switched to " + params.targetBot)
 
     // {
@@ -196,15 +202,15 @@ function PostToLivechat(url, req, token, res) {
     return;
 }
 
-// https.createServer({
-//     key: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
-//     cert: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
-//     timeout: 3000
-//   }, app)
-//   .listen(config.port, function () {
-//     console.log('Routing logic listening on ' + config.port)
-//   })
-  
- app.listen(config.port, function () {
+https.createServer({
+    key: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
+    cert: fs.readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
+    timeout: 3000
+  }, app)
+  .listen(config.port, function () {
     console.log('Routing logic listening on ' + config.port)
-  });
+  })
+  
+//  app.listen(config.port, function () {
+//     console.log('Routing logic listening on ' + config.port)
+//   });
