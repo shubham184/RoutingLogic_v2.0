@@ -1,16 +1,16 @@
-var winston=require('winston')
+import { createLogger, format as _format, transports as _transports } from 'winston';
 
-const logger = winston.createLogger({
+const logger = createLogger({
   level: 'info',
-  format: winston.format.json(),
+  format: _format.json(),
   defaultMeta: { service: 'user-service' },
   transports: [
     //
     // - Write to all logs with level `info` and below to `combined.log` 
     // - Write all logs error (and below) to `error.log`.
     //
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
+    new _transports.File({ filename: 'error.log', level: 'error' }),
+    new _transports.File({ filename: 'combined.log' })
   ]
 });
  
@@ -18,8 +18,8 @@ const logger = winston.createLogger({
 // If we're not in production then log to the `console` with the format:
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 // 
-    logger.add(new winston.transports.Console({
-    format: winston.format.simple()
+    logger.add(new _transports.Console({
+    format: _format.simple()
   }));
 
-module.exports = logger;
+export default logger;
