@@ -3,7 +3,7 @@ import { defaults, post } from 'axios';
 import { json, urlencoded } from 'body-parser';
 import logger from './logger';
 import { createClient } from 'redis';
-import { redisURL, logMessage, botAPIEndPoint, defaultBotToken, botConnector, connectorId, livechatConnector, port } from '../config';
+import { redisURL, logMessage, botAPIEndPoint, defaultBotToken, botConnector, connectorId, livechatConnector, port, https, keyfile, certfile } from '../config';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
 
@@ -118,7 +118,7 @@ app.post('/agentMessage', (req, res) => {
             "content": message
         }]
     };
-
+-
     post(bcUrl, response, {});
 
     res.send('agentmessage posted to ' + bcUrl);
@@ -198,15 +198,21 @@ function PostToLivechat(url, req, token, res) {
     return;
 }
 
-app.listen(port, function () {
-    console.log('Routing logic listening on ' + port); });
+if(https) {
+    // open routing logic in https
+    createServer({
+        key: readFileSync(keyfile),
+        cert: readFileSync(certfile),
+        timeout: 3000
+    }, app)
+    .listen(port, function () {
+        console.log('Routing logic listening on ' + port);
+    });
+}
+else {
+    // open routing logic on http
+    app.listen(port, function () {
+        console.log('Routing logic listening on ' + port); });
+}
 
-// createServer({
-//     key: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
-//     cert: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
-//     timeout: 3000
-//   }, app)
-//   .listen(port, function () {
-//     console.log('Routing logic listening on ' + port);
-//   });
   
