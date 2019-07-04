@@ -5,8 +5,7 @@
 <h3 align="center">Groupe Mutuel - Routing Logic</h3>
 
 <div align="center">
-
-  
+ 
 </div>
 
 ---
@@ -84,15 +83,15 @@ Eventually, if no errors occur, you will see the following output:
 To verify if bot works correctly, open the webchat connected to your on-premise bot connector, and type a simple message ("Bonjour"). This should route the message through bot connector to routing logic to chatbot and back. 
 
 you can also post the following JSON structure to https://localhost:8083/conversationTarget in Postman:
-
+```
 {
     "conversation_id": "12345" 
 }
-
+```
 This should result in a message like the following:
-
+```
 conversation 12345 is sent to undefined
-
+```
 ## 🚀 Deployment <a name = "deployment"></a>
 
 

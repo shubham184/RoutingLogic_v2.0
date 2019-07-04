@@ -1,7 +1,7 @@
 import express from 'express';
 import { defaults, post } from 'axios';
 import { json, urlencoded } from 'body-parser';
-import { info, error as _error } from './logger';
+import logger from './logger';
 import { createClient } from 'redis';
 import { redisURL, logMessage, botAPIEndPoint, defaultBotToken, botConnector, connectorId, livechatConnector, port } from '../config';
 import { readFileSync } from 'fs';
@@ -62,7 +62,7 @@ app.post('/routeMessage', (req, res) => {
     var message = req.body;
 
     if(logMessage) {
-        info(JSON.stringify(message));
+        logger.info(JSON.stringify(message));
     }
 
     var url = botAPIEndPoint; // URI for conversation endpoint
@@ -137,7 +137,7 @@ app.get('/', (req, res) => {
 });
 
 function PostToSAP(url, req, token, res) {
-    info('Posting to SAP CAI ' + token);
+    logger.info('Posting to SAP CAI ' + token);
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
@@ -145,17 +145,17 @@ function PostToSAP(url, req, token, res) {
         })
         .then(function (response) {
             if(logMessage) {
-                info('SAP CAI response: ' + JSON.stringify(response.data, null, 2));
+                logger.info('SAP CAI response: ' + JSON.stringify(response.data, null, 2));
             }
             res.send(response.data);
         })
         .catch(function (error) {
-            _error(error);
+            logger.error(error);
         });
 }
 
 function PostToLivechat(url, req, token, res) {
-    info('posting to livechat');
+    logger.info('posting to livechat');
     var lUrl = livechatConnector;
 
     req.timeout = "2000";
@@ -198,12 +198,15 @@ function PostToLivechat(url, req, token, res) {
     return;
 }
 
-createServer({
-    key: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
-    cert: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
-    timeout: 3000
-  }, app)
-  .listen(port, function () {
-    console.log('Routing logic listening on ' + port);
-  });
+app.listen(port, function () {
+    console.log('Routing logic listening on ' + port); });
+
+// createServer({
+//     key: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-key.pem'),
+//     cert: readFileSync('gmclouddemo.westeurope.cloudapp.azure.com-chain.pem'),
+//     timeout: 3000
+//   }, app)
+//   .listen(port, function () {
+//     console.log('Routing logic listening on ' + port);
+//   });
   
