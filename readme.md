@@ -56,6 +56,8 @@ See below for a config file with:
 - bot connector connector id = 60c079e0-8d7f-45cf-8c7a-66dec0d906bc
 - bot token for default chat bot = 8910250d582866777b70e9a8bbf342db
 - routing logic endpoint running on 8083
+- use https for communication
+- use keyfile and certfile specified for https encryption
 
 For actual values for your system, please refer to the notes taken during bot connector installation, and the bot token as available in SAP CAI in your chat bot
 ```
@@ -67,7 +69,10 @@ module.exports = {
         "connectorId": "60c079e0-8d7f-45cf-8c7a-66dec0d906bc",
         "defaultBotToken" : "8910250d582866777b70e9a8bbf342db",
         "port" : "8083",
-        "logMessage" : true
+        "logMessage" : true,
+        "https": true,
+        "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
+        "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem"
 }
 ```
 To start the system, use the following command:
