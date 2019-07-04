@@ -6,5 +6,8 @@ module.exports = {
     "connectorId": "d58394c2-9784-40d9-8158-9a46817ebe43",
     "defaultBotToken" : "5f495d931aaaff155657eea874ff5cd7",
     "port" : "5005",
-    "logMessage" : true
+    "logMessage" : true,
+    "https": true,
+    "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
+    "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem"
 }
