@@ -3,7 +3,7 @@ import { defaults, post } from 'axios';
 import { json, urlencoded } from 'body-parser';
 import logger from './logger';
 import { createClient } from 'redis';
-import { redisURL, logMessage, botAPIEndPoint, defaultBotToken, botConnector, connectorId, livechatConnector, port, https, keyfile, certfile } from '../config';
+import config from '../config';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
 
@@ -19,18 +19,23 @@ app.use(urlencoded({
 app.post('/switchBot', (req,res) => {
     
     
-    var client = createClient(redisURL);
+    var client = createClient(config.redisURL); 
     var params = req.body;
+    var language = "fr";
 
     console.log('Switching ' + JSON.stringify( params));
 
-    if(logMessage) {
-        info(JSON.stringify(req.body));
+    if(config.logMessage) {
+        info(JSON.stringify(req.body, null, 2));
     }
 
     if (params.conversation_id == undefined || params.targetBot == undefined) {
         res.send("no valid parameters, no switching done.");
         return;
+    }
+
+    if(params.targetBot=="livechat" && params.language!=undefined){
+        language=params.language;
     }
     
     // from livechat we send an empty string. if so, delete this conv so we are routed back to default bot
@@ -50,22 +55,23 @@ app.post('/switchBot', (req,res) => {
             "message": {
                 "type": "text",
                 "content": "Switched from chatbot"
-            }
+            },
+            "language": language
         };
         PostToLivechat("", msg, "livechat", res);
     }
 });
 
 app.post('/routeMessage', (req, res) => {
-    var client = createClient(redisURL);
+    var client = createClient(config.redisURL);
 
     var message = req.body;
 
-    if(logMessage) {
-        logger.info(JSON.stringify(message));
+    if(config.logMessage) {
+        logger.info(JSON.stringify(message, null, 2));
     }
 
-    var url = botAPIEndPoint; // URI for conversation endpoint
+    var url = config.botAPIEndPoint; // URI for conversation endpoint
     var convo = message.message.conversation; // retrieve conversation ID
     client.get(convo, function (err, value) {
         var messagea = message.message.attachment;
@@ -76,7 +82,7 @@ app.post('/routeMessage', (req, res) => {
         var token;
         if (value == null) {
             // forward to default bot token
-            token = "Token " + defaultBotToken;
+            token = "Token " + config.defaultBotToken;
             PostToSAP(url, req, token, res);
         } else {
             if (value == 'livechat') {
@@ -104,13 +110,13 @@ app.post('/conversationTarget', (req, res) => {
 });
 
 app.post('/agentMessage', (req, res) => {
-    if(logMessage) {
-        info(JSON.stringify(req.body));
+    if(config.logMessage) {
+        info(JSON.stringify(req.body, null, 2));
     }
      
     var message = req.body.message;
     var convId = req.body.conversation_id; //'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
-    var bcUrl = botConnector + '/connectors' + connectorId + '/conversations/' + convId + '/messages';
+    var bcUrl = config.botConnector + '/connectors' + config.connectorId + '/conversations/' + convId + '/messages';
 
     var response = {
         "messages": [{
@@ -125,7 +131,7 @@ app.post('/agentMessage', (req, res) => {
 });
 
 app.post('/errorMessage', (req, res) => {
-    if(logMessage) {
+    if(config.logMessage) {
         info(JSON.stringify(req.body, null, 2));
  
     }
@@ -144,7 +150,7 @@ function PostToSAP(url, req, token, res) {
             }
         })
         .then(function (response) {
-            if(logMessage) {
+            if(config.logMessage) {
                 logger.info('SAP CAI response: ' + JSON.stringify(response.data, null, 2));
             }
             res.send(response.data);
@@ -156,17 +162,18 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
     logger.info('posting to livechat');
-    var lUrl = livechatConnector;
+    var lUrl = config.livechatConnector;
 
     req.timeout = "2000";
 
     post(lUrl, req)
     .then(function (response) {
-        info('response: ' + JSON.stringify(response.data));
+        if(config.logMessage) {
+            info('response: ' + JSON.stringify(response.data, null, 2)); }
         res.send(response.data);
     })
     .catch(function(error) {
-        info(JSON.stringify(error));
+        info(JSON.stringify(error, null, 2));
         
         var errorMessage = {
             "results": {
@@ -198,21 +205,21 @@ function PostToLivechat(url, req, token, res) {
     return;
 }
 
-if(https) {
+if(config.https) {
     // open routing logic in https
     createServer({
-        key: readFileSync(keyfile),
-        cert: readFileSync(certfile),
+        key: readFileSync(config.keyfile),
+        cert: readFileSync(config.certfile),
         timeout: 3000
     }, app)
-    .listen(port, function () {
-        console.log('Routing logic listening on ' + port);
+    .listen(config.port, function () {
+        console.log('Routing logic listening on https ' + config.port);
     });
 }
 else {
     // open routing logic on http
-    app.listen(port, function () {
-        console.log('Routing logic listening on ' + port); });
+    app.listen(config.port, function () {
+        console.log('Routing logic listening on http ' + config.port); });
 }
 
   
