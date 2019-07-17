@@ -6,6 +6,7 @@ import { createClient } from 'redis';
 import config from '../config';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
+import * as tunnel from 'tunnel';
 
 var app = express();
 
@@ -75,7 +76,7 @@ app.post('/routeMessage', (req, res) => {
     var convo = message.message.conversation; // retrieve conversation ID
     client.get(convo, function (err, value) {
         var messagea = message.message.attachment;
-        var req = {
+        var req2 = {
             conversation_id: convo,
             message: messagea
         };
@@ -83,7 +84,7 @@ app.post('/routeMessage', (req, res) => {
         if (value == null) {
             // forward to default bot token
             token = "Token " + config.defaultBotToken;
-            PostToSAP(url, req, token, res);
+            PostToSAP(url, req2, token, res);
         } else {
             if (value == 'livechat') {
                 // post message to livechat logic
@@ -144,10 +145,21 @@ app.get('/', (req, res) => {
 
 function PostToSAP(url, req, token, res) {
     logger.info('Posting to SAP CAI ' + token);
+
+    
+    const agent = tunnel.httpsOverHttp({
+        proxy: {
+            host: config.proxyname,
+            port: config.proxyport,
+            proxyAuth: config.proxyauth}
+        }
+    );
+
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
-            }
+            },
+            httpsAgent: agent
         })
         .then(function (response) {
             if(config.logMessage) {
@@ -157,6 +169,32 @@ function PostToSAP(url, req, token, res) {
         })
         .catch(function (error) {
             logger.error(error);
+
+            var errorMessage = {
+                "results": {
+                  "nlp": {},
+                  "qna": {},
+                  "messages": [
+                    {
+                      "type": "text",
+                      "content": "We're sorry, but there is an error establishing the link.",
+                      "markdown": null,
+                      "delay": 3,
+                      "value": "We're sorry, but there is an error establishing the link."
+                    }
+                  ],
+                  "conversation": {
+                    "id": params.conversation_id,
+                    "language": "fr",
+                    "memory": {},
+                    "skill": "small-talks",
+                    "skill_occurences": 6
+                  }
+                },
+                "message": "Dialog rendered with success"
+              };
+                
+            res.send(errorMessage);
         });
 }
 

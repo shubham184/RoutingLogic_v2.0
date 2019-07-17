@@ -10,5 +10,8 @@ module.exports = {
     "https": true,
     "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
     "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
-    logfileLocation: "c:\\log\\routinglogic.log"
+    logfileLocation: "routinglogic.log",
+    proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
+    proxyport: 82,
+    proxyauth: "username:password"
 }

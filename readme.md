@@ -4,10 +4,6 @@
 
 <h3 align="center">Groupe Mutuel - Routing Logic</h3>
 
-<div align="center">
- 
-</div>
-
 ---
 
 <p align="center"> The routing logic will pass messages on to either an SAP CAI chatbot in the SAP cloud, or to the livechat connector for transmission to a chat session in Cisco UCCE 11.6 .
@@ -58,7 +54,9 @@ See below for a config file with:
 - routing logic endpoint running on 8083
 - use https for communication
 - use keyfile and certfile specified for https encryption
-- use folder c:\log for logging, and use logfile routinglogic.log for log info
+- use logfile routinglogic.log for log info
+- use username:password for proxy connection to SAP CAI. leave as empty string if no proxy is required
+- proxyserver name, port and authentication information
 
 For actual values for your system, please refer to the notes taken during bot connector installation, and the bot token as available in SAP CAI in your chat bot
 ```
@@ -74,7 +72,11 @@ module.exports = {
         "https": true,
         "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
         "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
-        logfileLocation: "c:\\log\\routinglogic.log"
+        logfileLocation: "routinglogic.log",
+        proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
+        proxyport: 82,
+        proxyauth: "username:password"
+
 }
 ```
 To start the system, use the following command:

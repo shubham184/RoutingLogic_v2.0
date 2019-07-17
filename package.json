@@ -6,7 +6,7 @@
   "scripts": {
     "start": "set NODE_ENV=cloud && npm install && node index.js --exec babel-node",
     "startDev": "set NODE_ENV=dev && nodemon src/start.js --exec babel-node",
-    "debug": "set NODE_ENV=dev && nodemon src/start.js --inspect --exec babel-node",
+    "debug": "set NODE_ENV=dev && nodemon src/start.js --inspect --exec babel-node  --tls-min-v1.0",
     "test": "set NODE_ENV=test && node_modules/.bin/mocha",
     "build": "babel src --out-dir dist"
   },
@@ -22,6 +22,7 @@
     "nock": "^10.0.6",
     "nodemon": "^1.18.10",
     "redis": "^2.8.0",
+    "tunnel": "0.0.6",
     "winston": "^3.2.1"
   },
   "devDependencies": {
