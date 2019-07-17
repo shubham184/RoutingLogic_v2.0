@@ -9,5 +9,6 @@ module.exports = {
     "logMessage" : true,
     "https": true,
     "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
-    "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem"
+    "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
+    logfileLocation: "c:\\log\\routinglogic.log"
 }

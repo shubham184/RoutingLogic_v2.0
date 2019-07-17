@@ -58,6 +58,7 @@ See below for a config file with:
 - routing logic endpoint running on 8083
 - use https for communication
 - use keyfile and certfile specified for https encryption
+- use folder c:\log for logging, and use logfile routinglogic.log for log info
 
 For actual values for your system, please refer to the notes taken during bot connector installation, and the bot token as available in SAP CAI in your chat bot
 ```
@@ -72,7 +73,8 @@ module.exports = {
         "logMessage" : true,
         "https": true,
         "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
-        "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem"
+        "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
+        logfileLocation: "c:\\log\\routinglogic.log"
 }
 ```
 To start the system, use the following command:

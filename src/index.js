@@ -26,7 +26,7 @@ app.post('/switchBot', (req,res) => {
     console.log('Switching ' + JSON.stringify( params));
 
     if(config.logMessage) {
-        info(JSON.stringify(req.body, null, 2));
+        config.info(JSON.stringify(req.body, null, 2));
     }
 
     if (params.conversation_id == undefined || params.targetBot == undefined) {
@@ -111,7 +111,7 @@ app.post('/conversationTarget', (req, res) => {
 
 app.post('/agentMessage', (req, res) => {
     if(config.logMessage) {
-        info(JSON.stringify(req.body, null, 2));
+        config.info(JSON.stringify(req.body, null, 2));
     }
      
     var message = req.body.message;
@@ -169,11 +169,11 @@ function PostToLivechat(url, req, token, res) {
     post(lUrl, req)
     .then(function (response) {
         if(config.logMessage) {
-            info('response: ' + JSON.stringify(response.data, null, 2)); }
+            config.info('response: ' + JSON.stringify(response.data, null, 2)); }
         res.send(response.data);
     })
     .catch(function(error) {
-        info(JSON.stringify(error, null, 2));
+        config.info(JSON.stringify(error, null, 2));
         
         var errorMessage = {
             "results": {
