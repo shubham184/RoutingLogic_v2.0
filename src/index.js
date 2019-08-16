@@ -256,6 +256,7 @@ function PostToLivechat(url, req, token, res) {
     );
     return;
 }
+const PORT = process.env.PORT || config.port;
 
 if(config.https) {
     // open routing logic in https
@@ -264,14 +265,15 @@ if(config.https) {
         cert: readFileSync(config.certfile),
         timeout: 3000
     }, app)
-    .listen(config.port, function () {
-        console.log('Routing logic listening on https ' + config.port);
+    .listen(PORT, function () {
+        console.log('Routing logic listening on https ' + PORT);
     });
 }
 else {
+    
     // open routing logic on http
-    app.listen(config.port, function () {
-        console.log('Routing logic listening on http ' + config.port); });
+    app.listen(PORT, function () {
+        console.log('Routing logic listening on http ' + PORT); });
 }
 
   
