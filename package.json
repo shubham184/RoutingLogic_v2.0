@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && node src/start.js --exec babel-node",
+    "start": "set NODE_ENV=dev && node start.js --exec babel-node",
     "startDev": "set NODE_ENV=dev && nodemon src/start.js --exec babel-node",
     "debug": "set NODE_ENV=dev && nodemon src/start.js --inspect --exec babel-node",
     "test": "set NODE_ENV=test && node_modules/.bin/mocha",
