@@ -13,6 +13,6 @@ module.exports = {
         logfileLocation: "routinglogic.log",
         proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
         proxyport: 82,
-        proxyauth: "username:password"
+        proxyauth: "g02\\nllittelm:Lanterna987!"
 
 }

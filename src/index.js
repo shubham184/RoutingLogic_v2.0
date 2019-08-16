@@ -1,12 +1,13 @@
 import express from 'express';
-import { defaults, post } from 'axios';
+import Axios, { defaults, post } from 'axios';
 import { json, urlencoded } from 'body-parser';
 import logger from './logger';
 import { createClient } from 'redis';
 import config from '../config';
 import { readFileSync } from 'fs';
-import { createServer } from 'https';
+import { https, createServer } from 'https';
 import * as tunnel from 'tunnel';
+
 
 var app = express();
 
@@ -74,6 +75,8 @@ app.post('/routeMessage', (req, res) => {
 
     var url = config.botAPIEndPoint; // URI for conversation endpoint
     var convo = message.message.conversation; // retrieve conversation ID
+
+
     client.get(convo, function (err, value) {
         var messagea = message.message.attachment;
         var req2 = {
@@ -89,12 +92,12 @@ app.post('/routeMessage', (req, res) => {
             if (value == 'livechat') {
                 // post message to livechat logic
                 token = 'livechat';
-                PostToLivechat(url, req, token, res);
+                PostToLivechat(url, req2, token, res);
             } else {
                 // forward message to bot specified in redis
                 client.get(value, function (err, value) {
                     token = "Token " + value;
-                    PostToSAP(url, req, token, res);
+                    PostToSAP(url, req2, token, res);
                 });
             }
         }
@@ -144,9 +147,8 @@ app.get('/', (req, res) => {
 });
 
 function PostToSAP(url, req, token, res) {
-    logger.info('Posting to SAP CAI ' + token);
+    logger.info('Posting to SAP CAI ' + token.toString());
 
-    
     const agent = tunnel.httpsOverHttp({
         proxy: {
             host: config.proxyname,
@@ -155,11 +157,23 @@ function PostToSAP(url, req, token, res) {
         }
     );
 
+    // var proxyOptions = {
+    //     proxy: 'http://bmxsaXR0ZWxtOkRvbGZpbmFyaXVtODc2IQ==@G02NLPXMRSH000.g02.fujitsu.local:82',
+    //     authType: 'ntlm',
+    //     ntlm: {
+    //       domain: 'G02'
+    //     }
+    //   };
+    // var proxyingAgent = require('proxying-agent').create(proxyOptions, url);
+
+    // Axios.proxyOptions = proxyOptions;
+
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
-            },
-            httpsAgent: agent
+            }
+            // ,
+            // httpsAgent: agent
         })
         .then(function (response) {
             if(config.logMessage) {
@@ -184,7 +198,7 @@ function PostToSAP(url, req, token, res) {
                     }
                   ],
                   "conversation": {
-                    "id": params.conversation_id,
+                    "id": JSON.parse(error.config.data).conversation_id,
                     "language": "fr",
                     "memory": {},
                     "skill": "small-talks",
