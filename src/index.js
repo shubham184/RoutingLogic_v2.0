@@ -22,6 +22,7 @@ app.post('/switchBot', (req,res) => {
     
     
     var client = createClient(config.redisURL); 
+    client.auth("GlobalSTORE1");
     var params = req.body;
     var language = "fr";
 
@@ -66,6 +67,7 @@ app.post('/switchBot', (req,res) => {
 
 app.post('/routeMessage', (req, res) => {
     var client = createClient(config.redisURL);
+    client.auth("GlobalSTORE1");
 
     var message = req.body;
 
@@ -107,6 +109,7 @@ app.post('/routeMessage', (req, res) => {
 app.post('/conversationTarget', (req, res) => {
     var convId = req.body.conversation_id;
     var client = createClient();
+    client.auth("GlobalSTORE1");
 
     client.get(convId, function (err, value) {
         res.send('conversation ' + convId + ' is sent to ' + value);
