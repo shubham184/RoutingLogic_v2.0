@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && node start.js --exec babel-node",
+    "start": "set NODE_ENV=dev && node src/start.js --exec babel-node",
     "startDev": "set NODE_ENV=dev && nodemon src/start.js --exec babel-node",
     "debug": "set NODE_ENV=dev && nodemon src/start.js --inspect --exec babel-node",
     "test": "set NODE_ENV=test && node_modules/.bin/mocha",
@@ -20,13 +20,13 @@
     "mocha": "^6.1.4",
     "ngrok": "^3.1.1",
     "nock": "^10.0.6",
-    "nodemon": "^1.18.10",
     "proxying-agent": "^2.4.0",
     "redis": "^2.8.0",
     "tunnel": "0.0.6",
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "nodemon": "^1.18.10",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/node": "^7.4.5",
