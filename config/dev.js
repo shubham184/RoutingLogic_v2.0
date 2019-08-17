@@ -1,5 +1,5 @@
 module.exports = {
-        "redisURL" : "redis://127.0.0.1:6379",
+        "redisURL" : "redis://redis-11736.c8.us-east-1-3.ec2.cloud.redislabs.com:11736",
         "botAPIEndPoint" : "https://api.cai.tools.sap:443/build/v1/dialog",
         "botConnector" : "http://localhost:8082/v1/",
         "livechatConnector": "http://172.17.233.21:8084/",
