@@ -158,8 +158,8 @@ function PostToSAP(url, req, token, res) {
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
-            },
-            httpsAgent: agent
+            } //,
+            // httpsAgent: agent
         })
         .then(function (response) {
             if(config.logMessage) {
