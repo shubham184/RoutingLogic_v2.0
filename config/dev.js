@@ -5,14 +5,10 @@ module.exports = {
         "livechatConnector": "http://172.17.233.21:8084/",
         "connectorId": "60c079e0-8d7f-45cf-8c7a-66dec0d906bc",
         "defaultBotToken" : "5f495d931aaaff155657eea874ff5cd7",
-        "port" : "8083",
+        "port" : "8080",
         "logMessage" : true,
         "https": false,
         "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
         "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
-        logfileLocation: "routinglogic.log",
-        proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
-        proxyport: 82,
-        proxyauth: "username:password"
-
+        logfileLocation: "routinglogic.log"
 }

@@ -7,6 +7,11 @@ import config from '../config';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
 import * as tunnel from 'tunnel';
+import HttpsProxyAgent from 'https-proxy-agent';
+
+const {
+    https_proxy,
+} = process.env;
 
 var app = express();
 
@@ -146,20 +151,13 @@ app.get('/', (req, res) => {
 function PostToSAP(url, req, token, res) {
     logger.info('Posting to SAP CAI ' + token);
 
+    const agent = new HttpsProxyAgent(https_proxy);
     
-    const agent = tunnel.httpsOverHttp({
-        proxy: {
-            host: config.proxyname,
-            port: config.proxyport,
-            proxyAuth: config.proxyauth}
-        }
-    );
-
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
-            } //,
-            // httpsAgent: agent
+            } ,
+            httpsAgent: agent
         })
         .then(function (response) {
             if(config.logMessage) {
