@@ -1,5 +1,5 @@
 module.exports = {
-        "redisURL" : "redis://redis-11736.c8.us-east-1-3.ec2.cloud.redislabs.com:11736",
+        "redisURL" : "redis://127.0.0.1:6379",
         "botAPIEndPoint" : "https://api.cai.tools.sap:443/build/v1/dialog",
         "botConnector" : "http://localhost:8082/v1/",
         "livechatConnector": "http://172.17.233.21:8084/",
@@ -10,9 +10,5 @@ module.exports = {
         "https": false,
         "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
         "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
-        logfileLocation: "routinglogic.log",
-        proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
-        proxyport: 82,
-        proxyauth: "g02\\nllittelm:Lanterna987!"
-
+        logfileLocation: "routinglogic.log"
 }

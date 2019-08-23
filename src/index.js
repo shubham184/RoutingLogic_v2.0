@@ -1,13 +1,17 @@
 import express from 'express';
-import Axios, { defaults, post } from 'axios';
+import { defaults, post } from 'axios';
 import { json, urlencoded } from 'body-parser';
 import logger from './logger';
 import { createClient } from 'redis';
 import config from '../config';
 import { readFileSync } from 'fs';
-import { https, createServer } from 'https';
+import { createServer } from 'https';
 import * as tunnel from 'tunnel';
+import HttpsProxyAgent from 'https-proxy-agent';
 
+const {
+    https_proxy,
+} = process.env;
 
 var app = express();
 
@@ -22,7 +26,6 @@ app.post('/switchBot', (req,res) => {
     
     
     var client = createClient(config.redisURL); 
-    client.auth("GlobalSTORE1");
     var params = req.body;
     var language = "fr";
 
@@ -67,7 +70,6 @@ app.post('/switchBot', (req,res) => {
 
 app.post('/routeMessage', (req, res) => {
     var client = createClient(config.redisURL);
-    client.auth("GlobalSTORE1");
 
     var message = req.body;
 
@@ -77,8 +79,6 @@ app.post('/routeMessage', (req, res) => {
 
     var url = config.botAPIEndPoint; // URI for conversation endpoint
     var convo = message.message.conversation; // retrieve conversation ID
-
-
     client.get(convo, function (err, value) {
         var messagea = message.message.attachment;
         var req2 = {
@@ -94,12 +94,12 @@ app.post('/routeMessage', (req, res) => {
             if (value == 'livechat') {
                 // post message to livechat logic
                 token = 'livechat';
-                PostToLivechat(url, req2, token, res);
+                PostToLivechat(url, req, token, res);
             } else {
                 // forward message to bot specified in redis
                 client.get(value, function (err, value) {
                     token = "Token " + value;
-                    PostToSAP(url, req2, token, res);
+                    PostToSAP(url, req, token, res);
                 });
             }
         }
@@ -109,7 +109,6 @@ app.post('/routeMessage', (req, res) => {
 app.post('/conversationTarget', (req, res) => {
     var convId = req.body.conversation_id;
     var client = createClient();
-    client.auth("GlobalSTORE1");
 
     client.get(convId, function (err, value) {
         res.send('conversation ' + convId + ' is sent to ' + value);
@@ -150,33 +149,15 @@ app.get('/', (req, res) => {
 });
 
 function PostToSAP(url, req, token, res) {
-    logger.info('Posting to SAP CAI ' + token.toString());
+    logger.info('Posting to SAP CAI ' + token);
 
-    const agent = tunnel.httpsOverHttp({
-        proxy: {
-            host: config.proxyname,
-            port: config.proxyport,
-            proxyAuth: config.proxyauth}
-        }
-    );
-
-    // var proxyOptions = {
-    //     proxy: 'http://bmxsaXR0ZWxtOkRvbGZpbmFyaXVtODc2IQ==@G02NLPXMRSH000.g02.fujitsu.local:82',
-    //     authType: 'ntlm',
-    //     ntlm: {
-    //       domain: 'G02'
-    //     }
-    //   };
-    // var proxyingAgent = require('proxying-agent').create(proxyOptions, url);
-
-    // Axios.proxyOptions = proxyOptions;
-
+    const agent = new HttpsProxyAgent(https_proxy);
+    
     post(url, req, {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
-            }
-            // ,
-            // httpsAgent: agent
+            } ,
+            httpsAgent: agent
         })
         .then(function (response) {
             if(config.logMessage) {
@@ -201,7 +182,7 @@ function PostToSAP(url, req, token, res) {
                     }
                   ],
                   "conversation": {
-                    "id": JSON.parse(error.config.data).conversation_id,
+                    "id": params.conversation_id,
                     "language": "fr",
                     "memory": {},
                     "skill": "small-talks",
@@ -259,7 +240,6 @@ function PostToLivechat(url, req, token, res) {
     );
     return;
 }
-const PORT = process.env.PORT || config.port;
 
 if(config.https) {
     // open routing logic in https
@@ -268,15 +248,14 @@ if(config.https) {
         cert: readFileSync(config.certfile),
         timeout: 3000
     }, app)
-    .listen(PORT, function () {
-        console.log('Routing logic listening on https ' + PORT);
+    .listen(config.port, function () {
+        console.log('Routing logic listening on https ' + config.port);
     });
 }
 else {
-    
     // open routing logic on http
-    app.listen(PORT, function () {
-        console.log('Routing logic listening on http ' + PORT); });
+    app.listen(config.port, function () {
+        console.log('Routing logic listening on http ' + config.port); });
 }
 
   
