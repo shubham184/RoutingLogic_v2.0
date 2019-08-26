@@ -157,7 +157,8 @@ function PostToSAP(url, req, token, res) {
             headers: {
                 Authorization: token // this token will determine what bot will handle the input
             } ,
-            httpsAgent: agent
+            httpsAgent: agent,
+            proxy: false
         })
         .then(function (response) {
             if(config.logMessage) {
