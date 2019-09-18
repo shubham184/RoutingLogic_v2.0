@@ -67,7 +67,7 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
-  const convId = req.conversation_id;
+  const convId = req.conversation_id || req.body.conversation_id;
   const lUrl = config.livechatConnector;
   req.timeout = "2000";
   post(lUrl, req.body)
@@ -128,14 +128,15 @@ app.post("/switchBot", (req, res) => {
   // we're entering livechat. kickstart the convo there by sending notification and starting
   // message exchange with livechat, so that status messages from the livechat are sent to the channel
   if (params.targetBot === "livechat") {
-    const msg = {
+    const msg = { "body" : {
       conversation_id: params.conversation_id,
       message: {
         type: "text",
         content: "Switched from chatbot",
       },
       language,
-    };
+    }
+  };
     PostToLivechat("", msg, "livechat", res);
   }
 });
