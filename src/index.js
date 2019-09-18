@@ -70,7 +70,7 @@ function PostToLivechat(url, req, token, res) {
   const convId = req.conversation_id;
   const lUrl = config.livechatConnector;
   req.timeout = "2000";
-  post(lUrl, req)
+  post(lUrl, req.body)
     .then((response) => {
       res.send(response.data);
     })
