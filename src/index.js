@@ -42,9 +42,6 @@ function PostToSAP(url, req, token, res) {
     httpsAgent: agent,
   })
     .then((response) => {
-      if (config.logMessage) {
-        logger.info(`SAP CAI response: ${JSON.stringify(response.data, null, 2)}`);
-      }
       res.send(response.data);
     })
     .catch((error) => {
@@ -194,10 +191,6 @@ app.post("/conversationTarget", (req, res) => {
 });
 
 app.post("/agentMessage", (req, res) => {
-  if (config.logMessage) {
-    logger.info(JSON.stringify(req.body, null, 2));
-  }
-
   const { message } = req.body;
   const convId = req.body.conversation_id; // 'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
   const bcUrl = `${config.botConnector}/connectors/${config.connectorId}/conversations/${convId}/messages`;
@@ -214,9 +207,6 @@ app.post("/agentMessage", (req, res) => {
 });
 
 app.post("/errorMessage", (req, res) => {
-  if (config.logMessage) {
-    logger.info(JSON.stringify(req.body, null, 2));
-  }
   res.send("error message received from cisco ece");
 });
 

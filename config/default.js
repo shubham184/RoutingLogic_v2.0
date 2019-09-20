@@ -7,12 +7,8 @@ module.exports = {
   connectorId: "60c079e0-8d7f-45cf-8c7a-66dec0d906bc",
   defaultBotToken: "5f495d931aaaff155657eea874ff5cd7",
   port: "8083",
-  logMessage: true,
-  https: true,
+  https: false,
   keyfile: "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
   certfile: "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
   logfileLocation: "routinglogic.log",
-  proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
-  proxyport: 82,
-  proxyauth: "username:password",
 };
