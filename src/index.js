@@ -6,6 +6,7 @@ import express from "express";
 import { defaults, post } from "axios";
 import { json, urlencoded } from "body-parser";
 import { createClient } from "redis";
+import * as HttpsProxyAgent from "https-proxy-agent";
 
 import config from "../config";
 
@@ -20,15 +21,25 @@ app.use(urlencoded({
   extended: true,
 }));
 
+const {
+  httpsProxy,
+} = process.env;
+
 function PostToSAP(url, req, token, res) {
-  logger.info(`Posting to SAP CAI ${token}`);
+  logger.info(`Posting message to SAP CAI with token ${token}`);
   const convId = req.conversation_id;
-  // const agent = new HttpsProxyAgent(https_proxy);
+  // default https proxy agent to null.
+  // if defined, we will use the value from the environment
+  let agent = null;
+  if (httpsProxy) {
+    agent = new HttpsProxyAgent(httpsProxy);
+  }
+
   post(url, req, {
     headers: {
       Authorization: token, // this token will determine what bot will handle the input
-    }, // ,
-    // httpsAgent: agent
+    },
+    httpsAgent: agent,
   })
     .then((response) => {
       if (config.logMessage) {
@@ -128,15 +139,16 @@ app.post("/switchBot", (req, res) => {
   // we're entering livechat. kickstart the convo there by sending notification and starting
   // message exchange with livechat, so that status messages from the livechat are sent to the channel
   if (params.targetBot === "livechat") {
-    const msg = { "body" : {
-      conversation_id: params.conversation_id,
-      message: {
-        type: "text",
-        content: "Switched from chatbot",
+    const msg = {
+      body: {
+        conversation_id: params.conversation_id,
+        message: {
+          type: "text",
+          content: "Switched from chatbot",
+        },
+        language,
       },
-      language,
-    }
-  };
+    };
     PostToLivechat("", msg, "livechat", res);
   }
 });
