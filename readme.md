@@ -55,8 +55,6 @@ See below for a config file with:
 - use https for communication
 - use keyfile and certfile specified for https encryption
 - use logfile routinglogic.log for log info
-- use username:password for proxy connection to SAP CAI. leave as empty string if no proxy is required
-- proxyserver name, port and authentication information
 
 For actual values for your system, please refer to the notes taken during bot connector installation, and the bot token as available in SAP CAI in your chat bot
 ```
@@ -68,14 +66,10 @@ module.exports = {
         "connectorId": "60c079e0-8d7f-45cf-8c7a-66dec0d906bc",
         "defaultBotToken" : "8910250d582866777b70e9a8bbf342db",
         "port" : "8083",
-        "logMessage" : true,
         "https": true,
         "keyfile": "gmclouddemo.westeurope.cloudapp.azure.com-key.pem",
         "certfile": "gmclouddemo.westeurope.cloudapp.azure.com-chain.pem",
         logfileLocation: "routinglogic.log",
-        proxyname: "G02NLPXMRSH000.g02.fujitsu.local",
-        proxyport: 82,
-        proxyauth: "username:password"
 
 }
 ```
@@ -107,7 +101,3 @@ conversation 12345 is sent to undefined
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [Express](https://expressjs.com/) - Server Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
-
-
-
-

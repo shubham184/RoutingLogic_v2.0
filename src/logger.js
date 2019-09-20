@@ -6,7 +6,7 @@ import config from "../config";
 const logger = createLogger({
   level: "info",
   format: _format.json(),
-  defaultMeta: { service: "user-service" },
+  defaultMeta: { service: "RoutingLogic"},
   transports: [
     //
     // - Write to all logs with level `info` and below to `combined.log`

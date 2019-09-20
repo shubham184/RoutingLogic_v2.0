@@ -45,7 +45,7 @@ function PostToSAP(url, req, token, res) {
       res.send(response.data);
     })
     .catch((error) => {
-      logger.error(error);
+      logger.error(error.stack.toString());
       const errorMessage = {
         results: {
           nlp: {},
@@ -83,7 +83,7 @@ function PostToLivechat(url, req, token, res) {
       res.send(response.data);
     })
     .catch((error) => {
-      logger.info(JSON.stringify(error, null, 2));
+      logger.error(error.stack.toString());
       const errorMessage = {
         results: {
           nlp: {},
@@ -117,11 +117,12 @@ app.post("/switchBot", (req, res) => {
   let language = "fr";
 
   if (params.conversation_id === undefined || params.targetBot === undefined) {
+    logger.error("no valid parameters, no switching done.");
     res.send("no valid parameters, no switching done.");
     return;
   }
 
-  if (params.targetBot === "livechat" && params.language !== undefined) {
+  if (params.targetBot === "livechat" && params.language) {
     language = params.language;
   }
 
