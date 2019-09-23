@@ -40,6 +40,7 @@ function PostToSAP(url, req, token, res) {
       Authorization: token, // this token will determine what bot will handle the input
     },
     httpsAgent: agent,
+    proxy: false,
   })
     .then((response) => {
       res.send(response.data);
