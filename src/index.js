@@ -208,6 +208,30 @@ app.post("/agentMessage", (req, res) => {
   res.send(`agentmessage posted to ${bcUrl}`);
 });
 
+app.post("/agentCheck", (req, res) => {
+  const { language } = req.body;
+  let channel = "1007";
+
+  switch (language) {
+    case "fr": {
+      channel = "1007";
+      break;
+    }
+    case "de": {
+      channel = "1006";
+      break;
+    }
+    default: {
+
+      break;
+    }
+  }
+
+  
+
+  res.send();
+});
+
 app.post("/errorMessage", (req, res) => {
   res.send("error message received from cisco ece");
 });
