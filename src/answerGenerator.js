@@ -91,18 +91,16 @@ class AnswerGenerator {
     return answer;
   }
 
-  static generateMemory(keys, values) {
-    for (let i=0; i < keys.length; i += 1) {
-        const 
-    }
+  static generateMemory(key, value) {
     const conversation = {
-        "memory": {
+      memory: {
+        merge: true,
+      },
+    };
 
-        }
-    }
+    conversation.memory[key] = value;
 
     return conversation;
-
   }
 }
 

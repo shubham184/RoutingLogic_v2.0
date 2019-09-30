@@ -10,6 +10,7 @@ import * as HttpsProxyAgent from "https-proxy-agent";
 
 import config from "../config";
 
+import answerGenerator from "./answerGenerator";
 import logger from "./logger";
 
 const app = express();
@@ -77,7 +78,7 @@ function PostToSAP(url, req, token, res) {
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
   const convId = req.conversation_id || req.body.conversation_id;
-  const lUrl = config.livechatConnector  + config.livechatEndpoint;
+  const lUrl = config.livechatConnector + config.livechatEndpoint;
   req.timeout = "2000";
   post(lUrl, req.body)
     .then((response) => {
@@ -223,23 +224,28 @@ app.post("/agentMessage", (req, res) => {
    */
 app.post("/agentCheck", (req, res) => {
   const { language } = req.body.language || "fr"; // default to French
-  const lUrl = config.livechatConnector + config.agentavailabilityEndpoint;
-  const req = { 
-    language
+  const lUrl = config.livechatConnector + config.agentAvailability;
+  const livechatReq = {
+    language,
   };
 
+  const reply = answerGenerator.newReplyObject();
 
-
-  Axios.post(lUrl, req)
-  .then((response) => {
-
-  }) 
-  .catch(() => {
-
-  });
-  
-
-  res.status(201).send();
+  Axios.post(lUrl, livechatReq)
+    .then((response) => {
+      if (response.data.agentsAvailable) {
+        reply.replies.push(answerGenerator.generateMemory("agent_available", response.data.agentsAvailable));
+        res.status(200).send(reply);
+      } else {
+        reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
+        res.status(200).send(reply);
+      }
+    })
+    .catch((errorArgs) => {
+      logger.error(`error occurred during /agentCheck ${errorArgs.message}`);
+      reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
+      res.status(500).send(reply);
+    });
 });
 
 app.post("/errorMessage", (req, res) => {

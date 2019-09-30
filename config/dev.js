@@ -3,9 +3,9 @@ module.exports = {
   redisURL: "redis://127.0.0.1:6379",
   botAPIEndPoint: "https://api.cai.tools.sap:443/build/v1/dialog",
   botConnector: "http://localhost:8082/v1/",
-  livechatConnector: "http://localhost:8084/"
+  livechatConnector: "http://localhost:8084/",
   livechatEndpoint: "livechatMessage",
-  agentAvailability: "agentavailable"
+  agentAvailability: "agentavailable",
   connectorId: "0291ca68-e297-4774-8e28-130243d60e19",
   defaultBotToken: "5f495d931aaaff155657eea874ff5cd7",
   port: "8083",
