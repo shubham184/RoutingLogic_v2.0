@@ -3,13 +3,14 @@ import { readFileSync } from "fs";
 import { createServer } from "https";
 
 import express from "express";
-import { defaults, post } from "axios";
+import Axios, { defaults, post } from "axios";
 import { json, urlencoded } from "body-parser";
 import { createClient } from "redis";
 import * as HttpsProxyAgent from "https-proxy-agent";
 
 import config from "../config";
 
+import answerGenerator from "./answerGenerator";
 import logger from "./logger";
 
 const app = express();
@@ -77,7 +78,7 @@ function PostToSAP(url, req, token, res) {
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
   const convId = req.conversation_id || req.body.conversation_id;
-  const lUrl = config.livechatConnector;
+  const lUrl = config.livechatConnector + config.livechatEndpoint;
   req.timeout = "2000";
   post(lUrl, req.body)
     .then((response) => {
@@ -192,6 +193,13 @@ app.post("/conversationTarget", (req, res) => {
   });
 });
 
+/**
+   * Route called from livechat to post an agent message to the customer chat window
+   * @param  {String} conversation_id
+   * @param  {String} message
+   * @param  {function} callback
+   * @return {Object} success code
+   */
 app.post("/agentMessage", (req, res) => {
   const { message } = req.body;
   const convId = req.body.conversation_id; // 'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
@@ -205,7 +213,39 @@ app.post("/agentMessage", (req, res) => {
   };
   post(bcUrl, response, {});
 
-  res.send(`agentmessage posted to ${bcUrl}`);
+  res.status(201).send(`agentmessage posted to ${bcUrl}`);
+});
+
+/**
+   * Route called from the builder to check if we can switch to livechat.
+   * @param  {String} language
+   * @param  {function} callback
+   * @return {Object} response Recast.AI bot connector json object to update conversation memory
+   */
+app.post("/agentCheck", (req, res) => {
+  const { language } = req.body.language || "fr"; // default to French
+  const lUrl = config.livechatConnector + config.agentAvailability;
+  const livechatReq = {
+    language,
+  };
+
+  const reply = answerGenerator.newReplyObject();
+
+  Axios.post(lUrl, livechatReq)
+    .then((response) => {
+      if (response.data.agentsAvailable) {
+        reply.replies.push(answerGenerator.generateMemory("agent_available", response.data.agentsAvailable));
+        res.status(200).send(reply);
+      } else {
+        reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
+        res.status(200).send(reply);
+      }
+    })
+    .catch((errorArgs) => {
+      logger.error(`error occurred during /agentCheck ${errorArgs.message}`);
+      reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
+      res.status(500).send(reply);
+    });
 });
 
 app.post("/errorMessage", (req, res) => {
