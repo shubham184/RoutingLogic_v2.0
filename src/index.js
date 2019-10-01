@@ -194,7 +194,6 @@ app.post("/routeMessage", (req, res) => {
 
 app.post("/conversationTarget", (req, res) => {
   const convId = req.body.conversation_id;
-  console.log(config.redisURL);
   const client = createClient(config.redisURL);
   if (config.redisPassword) {
     client.auth(config.redisPassword);
@@ -268,7 +267,7 @@ app.post("/errorMessage", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("hi");
+  res.send("Fujitsu Routing Logic");
 });
 
 if (config.https) {
