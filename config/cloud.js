@@ -1,6 +1,6 @@
 /* eslint linebreak-style: ["error", "windows"] */
 module.exports = {
-  redisURL: "GlobalSTORE1@redis-11736.c8.us-east-1-3.ec2.cloud.redislabs.com:11736",
+  redisURL: "GlobalSTORE1@52.90.172.149:11736",
   botAPIEndPoint: "https://api.cai.tools.sap:443/build/v1/dialog",
   botConnector: "http://localhost:8082/v1/",
   livechatConnector: "http://localhost:8084/",
