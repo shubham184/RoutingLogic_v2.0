@@ -190,6 +190,9 @@ app.post("/conversationTarget", (req, res) => {
   const convId = req.body.conversation_id;
   console.log(config.redisURL);
   const client = createClient(config.redisURL);
+  if (config.redisPassword) {
+    client.auth(config.redisPassword);
+  }
 
   client.get(convId, (err, value) => {
     res.send(`conversation ${convId} is sent to ${value}`);
