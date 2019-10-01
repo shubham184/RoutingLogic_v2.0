@@ -117,6 +117,9 @@ function PostToLivechat(url, req, token, res) {
 
 app.post("/switchBot", (req, res) => {
   const client = createClient(config.redisURL);
+  if (config.redisPassword) {
+    client.auth(config.redisPassword);
+  }
   const params = req.body;
   let language = "fr";
 
@@ -157,6 +160,9 @@ app.post("/switchBot", (req, res) => {
 
 app.post("/routeMessage", (req, res) => {
   const client = createClient(config.redisURL);
+  if (config.redisPassword) {
+    client.auth(config.redisPassword);
+  }
   const message = req.body;
 
   const url = config.botAPIEndPoint; // URI for conversation endpoint
