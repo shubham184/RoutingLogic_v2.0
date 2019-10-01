@@ -188,6 +188,7 @@ app.post("/routeMessage", (req, res) => {
 
 app.post("/conversationTarget", (req, res) => {
   const convId = req.body.conversation_id;
+  console.log(config.redisURL);
   const client = createClient(config.redisURL);
 
   client.get(convId, (err, value) => {
