@@ -15,6 +15,8 @@ import logger from "./logger";
 
 const app = express();
 
+const PORT = process.env.PORT || config.port;
+
 defaults.headers.common["Content-Type"] = "application/json";
 
 app.use(json());
@@ -202,8 +204,11 @@ app.post("/conversationTarget", (req, res) => {
    */
 app.post("/agentMessage", (req, res) => {
   const { message } = req.body;
-  const convId = req.body.conversation_id; // 'e7693317-3fad-4974-8fd3-3e7b97f60b9f'
-  const bcUrl = `${config.botConnector}/connectors/${config.connectorId}/conversations/${convId}/messages`;
+  const { agentName } = req.body;
+  // eslint-disable-next-line camelcase
+  const { conversation_id } = req.body;
+  // eslint-disable-next-line camelcase
+  const bcUrl = `${config.botConnector}/connectors/${config.connectorId}/conversations/${conversation_id}/messages`;
 
   const response = {
     messages: [{
@@ -221,7 +226,7 @@ app.post("/agentMessage", (req, res) => {
    * @param  {String} language
    * @param  {function} callback
    * @return {Object} response Recast.AI bot connector json object to update conversation memory
-   */
+7   */
 app.post("/agentCheck", (req, res) => {
   const { language } = req.body.language || "fr"; // default to French
   const lUrl = config.livechatConnector + config.agentAvailability;
@@ -263,13 +268,13 @@ if (config.https) {
     cert: readFileSync(config.certfile),
     timeout: 3000,
   }, app)
-    .listen(config.port, () => {
-      logger.info(`Routing logic listening on https ${config.port}`);
+    .listen(PORT, () => {
+      logger.info(`Routing logic listening on https ${PORT}`);
     });
 } else {
   // open routing logic on http
-  app.listen(config.port, () => {
-    logger.info(`Routing logic listening on http ${config.port}`);
+  app.listen(PORT, () => {
+    logger.info(`Routing logic listening on http ${PORT}`);
   });
 }
 
