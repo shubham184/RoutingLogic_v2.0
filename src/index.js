@@ -19,6 +19,8 @@ const PORT = process.env.PORT || config.port;
 
 defaults.headers.common["Content-Type"] = "application/json";
 
+const routingLogic = {};
+
 app.use(json());
 app.use(urlencoded({
   extended: true,
@@ -28,7 +30,7 @@ const {
   httpsProxy,
 } = process.env;
 
-function PostToSAP(url, req, token, res) {
+routingLogic.PostToSAP = function PostToSAP(url, req, token, res) {
   logger.info(`Posting message to SAP CAI with token ${token}`);
   const convId = req.conversation_id;
   // default https proxy agent to null.
@@ -75,7 +77,7 @@ function PostToSAP(url, req, token, res) {
       };
       res.send(errorMessage);
     });
-}
+};
 
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
@@ -177,7 +179,7 @@ app.post("/routeMessage", (req, res) => {
     if (value === null) {
       // forward to default bot token
       token = `Token ${config.defaultBotToken}`;
-      PostToSAP(url, req2, token, res);
+      routingLogic.PostToSAP(url, req2, token, res);
     } else if (value === "livechat") {
       // post message to livechat logic
       token = "livechat";
@@ -186,7 +188,7 @@ app.post("/routeMessage", (req, res) => {
       // forward message to bot specified in redis
       client.get(value, (_err, redisvalue) => {
         token = `Token ${redisvalue}`;
-        PostToSAP(url, req, token, res);
+        routingLogic.PostToSAP(url, req, token, res);
       });
     }
   });
@@ -287,3 +289,4 @@ if (config.https) {
   });
 }
 
+module.exports = routingLogic;
