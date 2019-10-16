@@ -75,7 +75,7 @@ function PostToSAP(url, req, token, res) {
       };
       res.send(errorMessage);
     });
-}
+};
 
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
@@ -287,3 +287,4 @@ if (config.https) {
   });
 }
 
+module.exports = app;
