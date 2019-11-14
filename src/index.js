@@ -248,17 +248,16 @@ app.post("/agentCheck", (req, res) => {
 
   Axios.post(lUrl, livechatReq)
     .then((response) => {
+      let nbAgents = 0
       if (response.data.agentsAvailable) {
-        reply.replies.push(answerGenerator.generateMemory("agent_available", response.data.agentsAvailable));
-        res.status(200).send(reply);
-      } else {
-        reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
-        res.status(200).send(reply);
+        nbAgents = response.data.agentsAvailable;
       }
+      reply.conversation = answerGenerator.addInMemory(req.body.conversation, "agent_available", nbAgents);
+      res.status(200).send(reply);
     })
     .catch((errorArgs) => {
       logger.error(`error occurred during /agentCheck ${errorArgs.message}`);
-      reply.replies.push(answerGenerator.generateMemory("agent_available", 0));
+      reply.conversation = answerGenerator.addInMemory(req.body.conversation, "agent_available", 0);
       res.status(500).send(reply);
     });
 });

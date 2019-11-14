@@ -102,6 +102,16 @@ class AnswerGenerator {
 
     return conversation;
   }
+
+  static addInMemory(conversation, key, value) {
+    //If memory object exists add in the memory
+    if(conversation.memory){
+      conversation.memory[key] = value;
+    }else{
+      conversation.memory = {key: value}
+    }
+    return conversation;
+  }
 }
 
 module.exports = AnswerGenerator;
