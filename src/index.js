@@ -79,7 +79,7 @@ function PostToSAP(url, req, token, res) {
 
 function PostToLivechat(url, req, token, res) {
   logger.info("posting to livechat");
-  const convId = req.conversation_id || req.body.conversation_id;
+  const convId = req.conversation_id || req.body.chatId || req.body.conversation_id;
   const lUrl = config.livechatConnector + config.livechatEndpoint;
   req.timeout = "2000";
   post(lUrl, req.body)
@@ -122,6 +122,7 @@ app.post("/switchBot", (req, res) => {
   }
   const params = req.body;
   let language = "fr";
+  logger.info(JSON.stringify(params));
 
   if (params.conversation_id === undefined || params.targetBot === undefined) {
     logger.error("no valid parameters, no switching done.");
@@ -139,7 +140,7 @@ app.post("/switchBot", (req, res) => {
   } else {
     client.set(params.conversation_id, params.targetBot);
   }
-  res.send(`Switchbot completed succesfully, conversationId ${params.conversation_id} switched to ${params.targetBot}`);
+  //res.send(`Switchbot completed succesfully, conversationId ${params.conversation_id} switched to ${params.targetBot}`);
 
   // we're entering livechat. kickstart the convo there by sending notification and starting
   // message exchange with livechat, so that status messages from the livechat are sent to the channel
