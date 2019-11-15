@@ -159,7 +159,7 @@ app.post("/switchBot", (req, res) => {
   }
 });
 
-app.post("/routeMessage", (req, res) => {
+app.post("/routeMessage/:botId?", (req, res) => {
   const client = createClient(config.redisURL);
   if (config.redisPassword) {
     client.auth(config.redisPassword);
@@ -176,8 +176,8 @@ app.post("/routeMessage", (req, res) => {
     };
     let token;
     if (value === null) {
-      // forward to default bot token
-      token = `Token ${config.defaultBotToken}`;
+      // forward to the connectors'bot token ( or default bot token if not provided )
+      token = (req.params.botId)? `Token ${req.params.botId}` : `Token ${config.defaultBotToken}`;
       PostToSAP(url, req2, token, res);
     } else if (value === "livechat") {
       // post message to livechat logic
