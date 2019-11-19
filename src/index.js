@@ -159,6 +159,7 @@ app.post("/switchBot", (req, res) => {
   }
 });
 
+//TODO : Discuss if we need one routing logic per language or one with a routing table.  
 app.post("/routeMessage/:botId?", (req, res) => {
   const client = createClient(config.redisURL);
   if (config.redisPassword) {
@@ -213,8 +214,7 @@ app.post("/conversationTarget", (req, res) => {
    * @return {Object} success code
    */
 app.post("/agentMessage", (req, res) => {
-  const { message } = req.body;
-  const { agentName } = req.body;
+  const { message, agentName, isLive } = req.body;
   // eslint-disable-next-line camelcase
   const { conversation_id } = req.body;
   // eslint-disable-next-line camelcase
@@ -223,9 +223,12 @@ app.post("/agentMessage", (req, res) => {
   const response = {
     messages: [{
       type: "text",
+      isLive : isLive,
+      from: agentName,
       content: message,
     }],
   };
+  console.log(response);
   post(bcUrl, response, {});
 
   res.status(201).send(`agentmessage posted to ${bcUrl}`);
