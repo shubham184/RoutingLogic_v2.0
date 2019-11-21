@@ -2,7 +2,7 @@
 module.exports = {
   redisURL: "redis://127.0.0.1:6379",
   botAPIEndPoint: "https://api.cai.tools.sap/build/v1/dialog",
-  botConnector: "http://gmclouddemo.westeurope.cloudapp.azure.com:8082/v1/",
+  botConnector: "http://localhost:8082/v1/",
   livechatConnector: "http://localhost:8084/",
   livechatEndpoint: "livechatMessage",
   agentavailabilityEndpoint: "agentavailable",

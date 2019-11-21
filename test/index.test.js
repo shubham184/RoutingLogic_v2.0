@@ -80,7 +80,7 @@ describe("post agentmessage into a conversation", () => {
       .send(myRequest)
       .then((res) => {
         expect(res.status).to.equal(201);
-        expect(res.text).to.equal(`agentmessage posted to http:/localhost:8082/v1//connectors/${config.connectorId}/conversations/${conversationId}/messages`);
+        expect(res.text).to.equal(`agentmessage posted to http:/localhost:8082/v1/connectors/${config.connectorId}/conversations/${conversationId}/messages`);
         done();
       });
   });
