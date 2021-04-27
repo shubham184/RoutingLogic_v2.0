@@ -26,7 +26,7 @@
     "ngrok": "^3.1.1",
     "nock": "^10.0.6",
     "proxying-agent": "^2.4.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "tunnel": "0.0.6",
     "uuid": "^3.3.3",
     "winston": "^3.2.1"
