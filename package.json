@@ -22,7 +22,7 @@
     "esm": "^3.2.25",
     "express": "^4.16.4",
     "https-proxy-agent": "^2.2.2",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "ngrok": "^3.1.1",
     "nock": "^10.0.6",
     "proxying-agent": "^2.4.0",
